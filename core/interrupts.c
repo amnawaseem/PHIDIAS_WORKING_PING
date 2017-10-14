@@ -47,8 +47,10 @@ void interrupt_handler() {
 
 	owner_vm = _specification.irq_owner_table[interrupt_number];
 	if (owner_vm != NULL) {
-        printf("Get irq owner  %d \r\n", interrupt_number);
+
+
 		deliver_irq_to_vm(owner_vm, interrupt_number, 1);
+
 		// will be acked (reactivated) later by emulated IRQ write
 		// or by hardware virtualization assistance
 

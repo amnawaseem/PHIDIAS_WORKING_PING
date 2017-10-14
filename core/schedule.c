@@ -127,7 +127,7 @@ static queue_timer schedule_timer = {
 
 void scheduler_expired(timer *t) {
 	uint64_t clock = clock_read();
-	t->expiration = clock + 0x10000000ULL;
+    t->expiration = clock + 0x10000000ULL;
 	// printf("tick. new item: %016qx, clk_read: %016qx\r\n", t->expiration, clock);
 	timequeue_insert(&schedule_timer);
 	reschedule_pending = 1;

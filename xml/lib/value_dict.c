@@ -16,7 +16,6 @@ uint64_t dictS_get_hexnumber(const char *dict, int32_t index) {
 	for (p = dict; p; p = strchr(p, ';')) {
 		if (*p == ';')
 			++p;
-
 		if (strncmp(p, search, strlen(search)) != 0)
 			continue;
 

@@ -181,7 +181,7 @@ void emulate_peripheral_store(const vm_cpu *vm_cpu_em, const emulate *emul, uint
 #endif
 #ifdef EMULATE_MEMORY32
 	case EMULATE_TYPE_MEMORY_32BIT:
-		// printf("MEM W  to  %08x, val %08x\r\n", address, value);
+		//printf("MEM W  to  %08x, val %08x\r\n", address, value);
 		emulate_memory_store(vm_cpu_em, emul->control.memory, emul->bar, offset, value);
 		return;
 #endif

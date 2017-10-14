@@ -80,7 +80,7 @@ int generator_memory32(struct scenario_context *sctx, struct addendum *A,
       // xmlNodePtr hw_device = find_device(scene, hw_map->attrs[MAP_ATTR_XREF].value.string);
 
       if (get_attribute(hw_map, "base") != NULL)
-        hw_address += dict_get_hexnumber(hw_map, "base", -1);
+        hw_address += get_attribute_number(hw_map, "base");
       else
         hw_address = 0;
     }

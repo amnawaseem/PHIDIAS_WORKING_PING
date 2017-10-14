@@ -14,23 +14,25 @@
     <memreq id="cca0" flags_demand="rwgs" flags_prevent="" size="0x800000" />
     <!--memreq id="cca1" flags_demand="rwgs" flags_prevent="" size="0x100000" /-->
     <memreq id="grant_table" flags_demand="rwgs" flags_prevent="" size="0x40000" />
-    <memreq id="xenstore1" flags_demand="rwgds" flags_prevent="" size="0x1000" />
+    <memreq id="xenstore1" flags_demand="rwgs" flags_prevent="" size="0x1000" />
     <memreq id="event_domains" flags_demand="rwgs" flags_prevent="" size="0x2000" />
     <memreq id="shared_info" flags_demand="rwgs" flags_prevent="" size="0x2000" />
-    <memreq id="xenstore2" flags_demand="rwgds" flags_prevent="" size="0x1000" />
+    <memreq id="xenstore2" flags_demand="rwgs" flags_prevent="" size="0x1000" />
     <address_space type="mmu" format="arm64:g4io40" size_estimate="0x60000">
       <map xref="serial" flags="w" />
       <map xref="irqc" flags="w" />
       <map xref="gpio4j" flags="w" />
       <map xref="timers" flags="w" />
-      <map xref="thermal" flags="w" />
+      <map xref="thermal" base="0xf7030000" flags="w" />
       <map xref="CATCHALL" flags="w"/>
-      <map xref="dwmmc2" flags="w"/>
-      <map xref="pinmux" flags="w" />
+      <map xref="usb" base="0xf72c0000" flags="w" />
+      <map xref="dwmmc2" base="0xf723f000" flags="w" />
+      <map xref="pinmux" base="0xf7010000" flags="w" />
+      <map xref="gpio03" base="0xf8011000" flags="w" />
     </address_space>
   </hypervisor>
 
-   <guest id="linux2" ncpus="1" cpumap="[0]">
+   <guest id="linux2" ncpus="1" cpumap="[1]">
     <memreq id="linux2_main" size="0x300F0000" flags_demand="rw" flags_prevent="xdus" />
     <memreq id="linux2_arch" size="0x1000" flags_demand="rwg" flags_prevent="xdus" cpumap="*" />
     <vdev id="linux2_uart" type="serial" frontend="pl011" master="master">
@@ -47,6 +49,11 @@
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf4410000" size="0x1000" />
     </vdev>
+    <vdev id="linux2_mmio_sysctrl" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf7030000" size="0x10000" />
+    </vdev>
+
     <vdev id="linux2_mmio1" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf7020000" size="0x14000" />
@@ -79,11 +86,19 @@
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf8000000" size="0x8000" />
     </vdev>
-    <!--vdev id="linux2_mmio_sdio" type="memory32">
+    <vdev id="linux2_mmio_sdio" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf723f000" size="0x1000" />
     </vdev>
-    <vdev id="linux2_mmio_sdio1" type="memory32">
+    <vdev id="linux2_mmio_usb" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf72c0000" size="0x40000" />
+    </vdev>
+    <vdev id="linux2_mmio_pinmux" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf7010000" size="0x1000" />
+    </vdev>
+    <!--vdev id="linux2_mmio_sdio1" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf723d000" size="0x1000" />
     </vdev>
@@ -110,8 +125,11 @@
       <map xref="xenstore1" base="0xfee40000" flags="rwgs" />
       <map xref="event_domains" base="0xfee41000" flags="rwgs" />
       <map xref="shared_info" base="0xfee43000" flags="rwgs" />
-      <map xref="dwmmc2" base="0xf723f000" flags="rw" />
-      <map xref="pinmux" base="0xf7010000" flags="rw" />
+      <map xref="thermal" base="0xf7030000" flags="rwd" />
+      <map xref="usb" base="0xf72c0000" flags="rwd" />
+      <map xref="dwmmc2" base="0xf723f000" flags="rwd" />
+      <map xref="pinmux" base="0xf7010000" flags="rwd" />
+      <map xref="gpio03" base="0xf8011000" flags="rwd" />
       <map xref="irqc" base="0xf6802000" subsize="0x1000" offset="0x6000" flags="rw" />
     </address_space>
     <init arch_page="linux2_arch">
@@ -153,9 +171,25 @@
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf7800000" size="0x2000" />
     </vdev>
+    <vdev id="linux1_mmio_sysctrl" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf7030000" size="0x10000" />
+    </vdev>
     <vdev id="linux1_mmio3" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf8011000" size="0x5000" />
+    </vdev>
+    <vdev id="linux1_mmio_usb" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf72c0000" size="0x40000" />
+    </vdev>
+    <vdev id="linux1_mmio_pinmux" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf7010000" size="0x1000" />
+    </vdev>
+    <vdev id="linux1_mmio_sdio" type="memory32">
+      <value type="default_mask_mem_r" value="0xffffffff" />
+      <emulate base="0xf723f000" size="0x1000" />
     </vdev>
     <vdev id="linux1_mmio_uart1" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
@@ -210,8 +244,11 @@
       <map xref="xenstore2" base="0xfee45000" flags="rwgs" />
       <map xref="event_domains" base="0xfee41000" flags="rwgs" />
       <map xref="shared_info" base="0xfee43000" flags="rwgs" />
-      <map xref="dwmmc2" base="0xf723f000" flags="rw" />
-      <map xref="pinmux" base="0xf7010000" flags="rw" />
+      <map xref="thermal" base="0xf7030000" flags="w" />
+      <map xref="usb" base="0xf72c0000" flags="w" />
+      <map xref="dwmmc2" base="0xf723f000" flags="w" />
+      <map xref="pinmux" base="0xf7010000" flags="w" />
+      <map xref="gpio03" base="0xf8011000" flags="w" />
       <map xref="irqc" base="0xf6802000" subsize="0x1000" offset="0x6000" flags="rw" />
     </address_space>
     <init arch_page="linux1_arch">
@@ -219,6 +256,13 @@
       <copy xref="linux_ramdisk" dref="linux1_main" offset="0xa000000" />
       <copy xref="linux_dtb" dref="linux1_main" offset="0x8000" />
       <irq handler="pass" vector="0x6a" />
+      <irq handler="pass" vector="0x6d" />
+      <irq handler="pass" vector="0x4b" />
+      <irq handler="pass" vector="0x54" />
+      <irq handler="pass" vector="0x55" />
+      <irq handler="pass" vector="0x56" />
+      <irq handler="pass" vector="0x57" />
+      <irq handler="pass" vector="0x27" />
       <cap type="ipc" target_xref="linux2" param="0x9" /> 
       <cap type="ipc" target_xref="linux1" param="0x9" /> 
       <cap type="ipc" target_xref="linux2" param="0xa" /> 
