@@ -25,9 +25,9 @@
       <map xref="timers" flags="w" />
       <map xref="thermal" base="0xf7030000" flags="w" />
       <map xref="CATCHALL" flags="w"/>
-      <map xref="usb" base="0xf72c0000" flags="w" />
+      <!--map xref="usb" base="0xf72c0000" flags="w" />
       <map xref="dwmmc2" base="0xf723f000" flags="w" />
-      <map xref="pinmux" base="0xf7010000" flags="w" />
+      <map xref="pinmux" base="0xf7010000" flags="w" /-->
       <map xref="gpio03" base="0xf8011000" flags="w" />
     </address_space>
   </hypervisor>
@@ -91,7 +91,7 @@
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf8000000" size="0x8000" />
     </vdev>
-    <vdev id="linux2_mmio_sdio" type="memory32">
+    <!--vdev id="linux2_mmio_sdio" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf723f000" size="0x1000" />
     </vdev>
@@ -102,7 +102,7 @@
     <vdev id="linux2_mmio_pinmux" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf7010000" size="0x1000" />
-    </vdev>
+    </vdev-->
     <!--vdev id="linux2_mmio_sdio1" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf723d000" size="0x1000" />
@@ -131,9 +131,9 @@
       <map xref="event_domains" base="0xfee41000" flags="rwgs" />
       <map xref="shared_info" base="0xfee43000" flags="rwgs" />
       <map xref="thermal" base="0xf7030000" flags="rwd" />
-      <map xref="usb" base="0xf72c0000" flags="rwd" />
+      <!--map xref="usb" base="0xf72c0000" flags="rwd" />
       <map xref="dwmmc2" base="0xf723f000" flags="rwd" />
-      <map xref="pinmux" base="0xf7010000" flags="rwd" />
+      <map xref="pinmux" base="0xf7010000" flags="rwd" /-->
       <map xref="gpio03" base="0xf8011000" flags="rwd" />
       <map xref="irqc" base="0xf6802000" subsize="0x1000" offset="0x6000" flags="rw" />
     </address_space>
@@ -188,7 +188,7 @@
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf8011000" size="0x5000" />
     </vdev>
-    <vdev id="linux1_mmio_usb" type="memory32">
+    <!--vdev id="linux1_mmio_usb" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf72c0000" size="0x40000" />
     </vdev>
@@ -199,7 +199,7 @@
     <vdev id="linux1_mmio_sdio" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf723f000" size="0x1000" />
-    </vdev>
+    </vdev-->
     <vdev id="linux1_mmio_uart1" type="memory32">
       <value type="default_mask_mem_r" value="0xffffffff" />
       <emulate base="0xf7111000" size="0x1000" />
@@ -254,9 +254,9 @@
       <map xref="event_domains" base="0xfee41000" flags="rwgs" />
       <map xref="shared_info" base="0xfee43000" flags="rwgs" />
       <map xref="thermal" base="0xf7030000" flags="w" />
-      <map xref="usb" base="0xf72c0000" flags="w" />
+      <!--map xref="usb" base="0xf72c0000" flags="w" />
       <map xref="dwmmc2" base="0xf723f000" flags="w" />
-      <map xref="pinmux" base="0xf7010000" flags="w" />
+      <map xref="pinmux" base="0xf7010000" flags="w" /-->
       <map xref="gpio03" base="0xf8011000" flags="w" />
       <map xref="irqc" base="0xf6802000" subsize="0x1000" offset="0x6000" flags="rw" />
     </address_space>

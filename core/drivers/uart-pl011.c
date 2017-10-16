@@ -71,7 +71,6 @@ void uart_pl011_putstring(const memarea *area, const char *string) {
  */
 uint32_t uart_pl011_irq(const memarea *area) {
 	uint32_t reason = mmio_read32(area->vaddr + PL011REG_UARTMIS);
-
 	if (reason & (PL011BIT_UARTIRQ_RX | PL011BIT_UARTIRQ_RT)) {
 		while (!(mmio_read32(area->vaddr + PL011REG_UARTFR) & PL011BIT_UARTFR_RXFE)) {
 			uint8_t ch = (uint8_t)mmio_read32(area->vaddr + PL011REG_UARTDR);

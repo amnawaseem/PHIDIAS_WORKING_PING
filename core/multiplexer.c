@@ -4,6 +4,9 @@
 #include <specification.h>
 #include <vm.h>
 #include <emulate/uart.h>
+#include <drivers/irq.h>
+
+#include <mmio.h>
 
 uint8_t __shared active_channel_in = 0;
 uint8_t __shared active_channel_out = 0;
@@ -84,16 +87,71 @@ inline void mux_in_char(uint8_t ch) {
 		}
 
 	}
-    int othercpu = (cpu_number == 0) ? 1 : 0; 
-	if (othercpu == (active_channel_in & 0xf)) {
-		   emulate_uart_push_character(_specification.cpus[othercpu].vm_cpus[0], ch);
-           //xcore_raise_interrupt_remote(_specification.cpus[othercpu].vm_cpus[0], 0x47);
-           //deliver_irq_to_vm(_specification.cpus[othercpu].vm_cpus[0], 0x47,1);
-           return;
-     }
-	//Char for phidias? What shall it do with it?
+    	//Char for phidias? What shall it do with it?
 	if(active_channel_in < 8)
 		return;
+    
+    int othercpu = (cpu_number == 0) ? 1 : 0; 
+	if (othercpu == (active_channel_in & 0xf)) {
+		   //emulate_uart_push_character(_specification.cpus[othercpu].vm_cpus[0], ch);
+           //xcore_raise_interrupt_remote(_specification.cpus[othercpu].vm_cpus[0], 0x47);
+          // deliver_irq_to_vm(_specification.cpus[othercpu].vm_cpus[0], 0x47,1);
+          ///gic_route_irq(0x47, 0, 1 << othercpu, 0xa0);
+        	uint32_t register_no = (0x47 >> 5);
+	        uint32_t bit_position = (0x47 & 0x1f);
+
+
+  
+      if (othercpu == 1){
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                    GIC_DIST_DISABLE_BASE + (register_no << 2),
+                    (1 << bit_position));    
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+            0x844, 0x02020202);
+
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                    GIC_DIST_ENABLE_BASE + (register_no << 2),
+                    (1 << bit_position));
+        mmio_write32((_specification.cpus[0].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                    GIC_DIST_DISABLE_BASE + (register_no << 2),
+                    (1 << bit_position));    
+        mmio_write32((_specification.cpus[0].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+          0x844, 0x02020202);
+
+        mmio_write32((_specification.cpus[0].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                    GIC_DIST_ENABLE_BASE + (register_no << 2),
+                    (1 << bit_position));
+
+
+        }
+        else{
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                        GIC_DIST_DISABLE_BASE + (register_no << 2),
+                        (1 << bit_position));  
+
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+            0x844, 0x01010101);
+
+        mmio_write32((_specification.cpus[othercpu].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                                GIC_DIST_ENABLE_BASE + (register_no << 2),
+                                (1 << bit_position));
+        mmio_write32((_specification.cpus[1].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                        GIC_DIST_DISABLE_BASE + (register_no << 2),
+                        (1 << bit_position));  
+
+        mmio_write32((_specification.cpus[1].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+            0x844, 0x01010101);
+
+        mmio_write32((_specification.cpus[1].memareas + MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+                                GIC_DIST_ENABLE_BASE + (register_no << 2),
+                                (1 << bit_position));
+
+
+       }            
+
+          return;
+     }
+
 	if (i == _specification.cpus[cpu_number].num_vm_cpus) {
 		// The state of the serial multiplexer is bogus...
 		printf("cpu numner %d ERROR, couldn't find a matching vm_cpu for id=0x%x\n",

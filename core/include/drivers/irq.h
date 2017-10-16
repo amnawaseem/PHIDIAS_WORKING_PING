@@ -82,9 +82,45 @@ static inline void irq_disable_irq(uint32_t interrupt_number) {
 # elif defined(IRQ_DRIVER_GIC)
 
 # include <drivers/irq-gic.h>
+#include <mmio.h>
 
 static inline void irq_setup(void) {
 	irq_gic_setup(core_memarea(MEMAREA_IRQC));
+}
+
+static int gic_route_irq(unsigned int irq, char level,
+                         unsigned int cpu_mask, unsigned int priority)
+{
+    volatile unsigned char *bytereg;
+    uint32_t cfg, edgebit;
+    unsigned long flags;
+    printf("cpu number %d\n\r", cpu_number);
+    /* Disable interrupt */
+    irq_gic_disable_irq(core_memarea(MEMAREA_IRQC), irq);
+    printf(" irq_gic_disable_irq \n\r");
+    /* Set edge / level */
+    cfg = mmio_read32(core_memarea(MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+				GIC_DIST_CONFIG_BASE + irq / 16);
+
+    edgebit = 2u << (2 * (irq % 16));
+    if ( level )
+        cfg &= ~edgebit;
+    else
+        cfg |= edgebit;
+    mmio_write32(core_memarea(MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST +
+				GIC_DIST_CONFIG_BASE + irq / 16, cfg);
+    printf(" set edge \n\r");
+    /* Set target CPU mask (RAZ/WI on uniprocessor) */
+    bytereg = (unsigned char *)mmio_read32(core_memarea(MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST + GIC_DIST_TARGETS_BASE );
+    bytereg[irq] = cpu_mask;
+   printf(" target CPU mask  \n\r");
+    /* Set priority */
+    //bytereg = (unsigned char *)mmio_read32(core_memarea(MEMAREA_IRQC)->vaddr + GICV2_AREAOFFSET_DIST + GIC_DIST_PRIORITY_BASE);
+    //bytereg[irq] = priority;
+
+    irq_gic_enable_irq(core_memarea(MEMAREA_IRQC), irq);
+    printf(" Set priority and enable \n\r");
+    return 0;
 }
 
 static inline uint32_t irq_get_irq_raw(void) {

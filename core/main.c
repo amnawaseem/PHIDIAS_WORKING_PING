@@ -40,7 +40,8 @@ static void print_banner() {
 }
 
 void __attribute__((section(".text"))) main() {
-	if (cpu_number == 0) {
+
+    if (cpu_number == 0 || cpu_number == 1) {
 		uart_setup();
 	}
 

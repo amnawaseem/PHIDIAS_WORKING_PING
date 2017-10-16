@@ -190,7 +190,7 @@ void capability_invoke(uint32_t cap_number) {
 	switch (cap->capability_type) {
 	case CAPABILITY_TYPE_IRQ:
 		if (cap->target->cpus[0].physical_cpu != cpu_number) {
-			xcore_raise_interrupt_remote(cap->target, cap->capability_param);
+            xcore_raise_interrupt_remote(cap->target, cap->capability_param);
 			return;
 		}
 		if (cap->target->cpus[0].sched_entities[0].state != SCHEDULER_STATE_READY)

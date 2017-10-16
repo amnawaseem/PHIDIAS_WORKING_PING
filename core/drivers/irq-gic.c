@@ -14,6 +14,8 @@ static void irq_gic_setup_global(const memarea *area) {
 				GIC_DIST_PRIORITY_BASE + i, 0x90909090);
 	}
 
+    mmio_write32(area->vaddr + GICV2_AREAOFFSET_DIST + 0x844, 0x03030303);
+
 	for (i = 32/8; i < 256/8; i += 4) {
 		mmio_write32(area->vaddr + GICV2_AREAOFFSET_DIST +
 				GIC_DIST_CLEARPENDING_BASE + i, 0xffffffff);
@@ -28,7 +30,7 @@ void irq_gic_setup(const memarea *area) {
 	mmio_write32(area->vaddr + GICV2_AREAOFFSET_CPU + GIC_CPU_PMR,
 			0xff);
 
-	if (cpu_number == 0) {
+	if (cpu_number == 0 || cpu_number == 1) {
 		irq_gic_setup_global(area);
 	}
 
@@ -81,6 +83,15 @@ void irq_gic_disable_irq(const memarea *area, uint32_t interrupt_number) {
 
 	mmio_write32(area->vaddr + GICV2_AREAOFFSET_DIST +
 				GIC_DIST_DISABLE_BASE + (register_no << 2),
+				(1 << bit_position));
+}
+
+void irq_gic_enable_irq(const memarea *area, uint32_t interrupt_number) {
+	uint32_t register_no = (interrupt_number >> 5);
+	uint32_t bit_position = (interrupt_number & 0x1f);
+
+	mmio_write32(area->vaddr + GICV2_AREAOFFSET_DIST +
+				GIC_DIST_ENABLE_BASE + (register_no << 2),
 				(1 << bit_position));
 }
 
