@@ -43,7 +43,7 @@ void platform_boot_cpus() {
 	}
 
 	/* desperately trying to get MMC2 up with recent Lx+DTB */
-	if (1) {
+	if (0) {
 		volatile uint32_t *xva = (volatile uint32_t *)core_memarea(MEMAREA_CATCHALL)->vaddr;
 
 		printf("DWMMC2 V: %x\r\n", xva[0x0723f06c >> 2]);
@@ -68,5 +68,6 @@ void platform_boot_cpus() {
 		printf("SYSCTL CK0: %x %x\r\n", xva[0x07030004 >> 2], xva[0x07030400 >> 2]);
 		printf("SYSCTL CK1: %x %x\r\n", xva[0x07030200 >> 2], xva[0x07030270 >> 2]);
 		printf("SYSCTL CK2: %x %x\r\n", xva[0x0703049c >> 2]);
-	}
+
+    }
 }
