@@ -3,14 +3,16 @@
   <device id="serial" base="0xf7113000" size="0x1000" />
   <device id="irqc" base="0xf6800000" size="0x8000" />
   <device id="gpio03" base="0xf8011000" size="0x5000" />
-  <device id="gpio4j" base="0xf7020000" size="0x10000" />
+  <device id="gpio4j" base="0xf7020000" size="0x14000" />
   <device id="timers" base="0xf8008000" size="0x9000" />
-  <device id="thermal" base="0xf7030000" size="0x2000" />
+  <device id="thermal" base="0xf7030000" size="0x10000" />
+  <device id="pmic" base="0xf8000000" size="0x10000" />
   <device id="CATCHALL" base="0xf0000000" size="0x0fff0000" />
-  <!--device id="dwmmc2" base="0xf723f000" size="0x1000" />
+  <device id="dwmmc2" base="0xf723d000" size="0x5000" />
   <device id="usb" base="0xf72c0000" size="0x40000" />
-  <device id="pinmux" base="0xf7010000" size="0x1000" /-->
+  <device id="pinmux" base="0xf7010000" size="0x1000" />
+  <device id="aoctrl" base="0xf7800000" size="0x2000" />
   <memory id="dram" base="0x00000000" size="0x80000000" />
   <memory id="sram" base="0xfff80000" size="0x12000" />
-
+ 
 </board>

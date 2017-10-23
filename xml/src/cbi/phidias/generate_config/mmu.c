@@ -38,6 +38,9 @@ static const struct memarea_fixed_index hypervisor_fixed_memareas[] = {
   { "gpio4j",		25, },
   { "timers",		26, },
   { "thermal",		27, },
+  { "usb",		28, },
+  { "dwmmc2",		29, },
+  
 
   { "lapic",		24, },
   { "ioapic",		25, },

@@ -50,7 +50,8 @@ void interrupt_handler() {
 
 
 		deliver_irq_to_vm(owner_vm, interrupt_number, 1);
-
+        if (interrupt_number == 106)
+       printf("interrupt_number #%d, pass through\r\n", interrupt_number);
 		// will be acked (reactivated) later by emulated IRQ write
 		// or by hardware virtualization assistance
 
