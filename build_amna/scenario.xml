@@ -36,7 +36,7 @@
     </address_space>
   </hypervisor>
 
-   <guest id="linux2" ncpus="1" cpumap="[0]">
+   <guest id="linux2" ncpus="1" cpumap="[1]">
     <memreq id="linux2_main" size="0x300F0000" flags_demand="rw" flags_prevent="xdus" />
     <memreq id="linux2_arch" size="0x1000" flags_demand="rwg" flags_prevent="xdus" cpumap="*" />
     <memreq id="linux2_sram" base="0xfff80000" size="0x11000" flags_prevent="" flags_demand="" on="sram" />
